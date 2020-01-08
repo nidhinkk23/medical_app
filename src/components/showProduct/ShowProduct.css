@@ -1,0 +1,10 @@
+.card-class{
+   transition: 300ms;
+}
+.card-class:hover{
+    transform: scale(1.01);
+    box-shadow: 0 0 5px;
+    color: rgba(47, 80, 226, 0.986);
+ }
+ 
+ 

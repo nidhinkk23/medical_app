@@ -5,7 +5,6 @@ import Axios from 'axios'
 import NavBar from '../navbar/NavBar'
 
 export default function Login(props) {
-
     const context = useContext(UserContext)
     let states = {
         email: "",
@@ -144,18 +143,31 @@ export default function Login(props) {
     }
     let handleSubmit = (event) => {
 
-        console.log("state.accounts ", state.accounts);
+        // console.log("state.accounts ", state.accounts);
         state.accounts.map((value, index) => {
-            console.log(value.email);
-            console.log(value.password);
+            // console.log("value ",value);
+            
+            // console.log(value.email);
+            // console.log(value.password);
             if (value.email === state.email && value.password === state.password) {
-                console.log("success", value.id);
+                localStorage.setItem("details",JSON.stringify(value))
+                if(value.email==="nidhinkk8@gmail.com"&& value.password==='Ss@2'){
+                    localStorage.setItem("role","Admin")
+                }else{
+                    localStorage.setItem("role","User")
+                }
+                console.log("success id", value.id);
+                localStorage.setItem("id",value.id)
                 context.setRole(value.role)
+                
+                // localStorage.setItem("value",value)
+
                 context.getDetails(value)
                 context.setId(value.id)
-                props.history.push('/home')
+                localStorage.setItem("idUser",value.id)
+                props.history.push('/showproduct')
                 context.setLogin(true)
-
+                localStorage.setItem("login",true)
 
             } else {
 
@@ -195,7 +207,7 @@ export default function Login(props) {
             {/* <TextField id="standard-basic" label="Standard" /> */}
             <div>
                 <form onSubmit={validation}>
-                    <div className="form-group col-md-4 col-sm-4 mt-5 mb-5   offset-md-4">
+                    <div className="form-group col-md-4 col-sm-4 mt-5 mb-5 card   offset-md-4">
                         <h1 className="offset-3" >Login</h1>
                         <TextField className="form-control mb-3"
                             placeholder='Email'
@@ -219,7 +231,7 @@ export default function Login(props) {
 
                         <div>
 
-                            <button className="btn btn-outline-info col-md-4 mt-3 offset-3 " id="login"
+                            <button className="btn btn-outline-info col-md-4 mb-3 mt-3 offset-3 " id="login"
                                 type="submit">login</button>
 
                         </div>

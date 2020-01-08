@@ -1,8 +1,7 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import UserContext from '../context/context';
 
 export default function PriceCalculation(props) {
-    
 
     console.log(props);
     let sum = 0
@@ -10,12 +9,10 @@ export default function PriceCalculation(props) {
         console.log("price ", value.price);
         let price = parseFloat(value.price)
 
-        sum = sum + price
+        sum = sum + price*value.count
     })
-    
-    console.log("sum ", sum);
-    localStorage.setItem("sum",sum)
-    
+  
+    localStorage.setItem("total",sum)
     return (
         <>
             <div className='mt-5'>

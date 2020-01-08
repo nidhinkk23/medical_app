@@ -5,22 +5,27 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import PriceCalculation from './PriceCalculation'
 import UserContext from '../context/context'
 import BillingPage from '../billingPage/BillingPage'
+import { Dropdown } from 'react-bootstrap'
+import { number } from 'prop-types'
+import CustomizedSnackbarsCart from './SnackBarCart'
 
 
 export default function CartItems(props) {
+    let idUser = localStorage.getItem("idUser")
 
     let stateShow = {
         accounts: [],
 
     }
+    const [open, setOpen] = React.useState(false);
     const [state, setState] = useState(stateShow)
+    const [selectedValue, setSelectedValue] = useState(1)
     const context = useContext(UserContext)
-
 
     console.log("props in Cart items ", props)
     //call in the useEffect method
     let getAllAccount = () => {
-        const url = `https://react-shopping-cart-fa82c.firebaseio.com/addcart/${context.idUser}.json`
+        const url = `https://react-shopping-cart-fa82c.firebaseio.com/addcart/${idUser}.json`
 
         let axiosGetProduct = async () => {
             try {
@@ -39,8 +44,26 @@ export default function CartItems(props) {
                 }
                 console.log("arr ", arr);
 
+                function getUnique(arr, comp) {
+
+                    const unique = arr
+                        .map(e => e[comp])
+
+                        // store the keys of the unique objects
+                        .map((e, i, final) => final.indexOf(e) === i && i)
+
+                        // eliminate the dead keys & store unique objects
+                        .filter(e => arr[e]).map(e => arr[e]);
+
+                    return unique;
+                }
+                let arrF = getUnique(arr, 'productName')
+                // console.log("******", arrF);
+
+                updateAfterF(arrF)
+
                 setState({
-                    accounts: arr
+                    accounts: arrF
                 })
 
 
@@ -54,21 +77,69 @@ export default function CartItems(props) {
         axiosGetProduct()
     }
 
-
     //call after mounted(comp. did mount)
     useEffect(() => {
         getAllAccount()
         console.log(state.accounts);
 
+
     }, [])
 
-    let deleteCart = async (accToDelete) => {
+    let updateAfterF = (arrF) => {
+        console.log("********", arrF);
+        deleteData()
+        uploadFilteredData(arrF)
 
+
+
+    }
+    let deleteData = async () => {
+
+        try {
+
+            const url = `https://react-shopping-cart-fa82c.firebaseio.com/addcart/${idUser}/.json`
+            let response = await Axios.delete(url)
+            console.log("response ", response);
+
+
+        } catch (error) {
+
+            console.log();
+
+        }
+
+    }
+
+    let uploadFilteredData = (arrF) => {
+        console.log("upload");
+        
+        try {
+
+            arrF.map(async(value) => {
+
+                const url = `https://react-shopping-cart-fa82c.firebaseio.com/addcart/${idUser}.json`
+
+                let response = await Axios.post(url, value)
+                console.log(response);
+
+            })
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+
+    }
+
+    let deleteCart = async (accToDelete) => {
+        setOpen(true)
         console.log("Account to  be delete ", accToDelete);
         const id = accToDelete.id
         console.log("id ", id);
 
-        const url = `https://react-shopping-cart-fa82c.firebaseio.com/addcart/${context.idUser}/` + id + `/.json`
+        const url = `https://react-shopping-cart-fa82c.firebaseio.com/addcart/${idUser}/` + id + `/.json`
 
 
         try {
@@ -84,10 +155,31 @@ export default function CartItems(props) {
                 ...state,
                 accounts: myAccounts
             })
+            setOpen(false)
+
         } catch (error) {
             console.log("error", error);
 
         }
+
+    }
+    let dropDown = (value, e) => {
+        console.log("dropDown ", value)
+        console.log("dropDown ", e.target.value)
+        
+        let newData = state.accounts.map((values)=>{
+            if(values.productName===value.productName){
+                console.log("hii");
+                values.count=e.target.value
+                return values
+            }
+            return values
+        })
+        setState({
+            ...state,
+            accounts:newData
+        })
+        
 
     }
 
@@ -102,7 +194,7 @@ export default function CartItems(props) {
         height: '150px'
     }
 
-   
+
 
     return (
         <div className=''>
@@ -117,6 +209,16 @@ export default function CartItems(props) {
                                         <img src={value.image} className="mt-3 ml-2" style={imgStyle} alt="img"></img>
                                         <div className='text-primary'>{value.brand}</div>
                                         <div>price:{value.price}</div>
+                                        <select className='mr-2'
+
+                                            onChange={(e) => {
+                                                dropDown(value, e)
+                                            }}
+                                        >
+                                            <option value={1}>1</option>
+                                            <option value={2}>2</option>
+                                            <option value={3}>3</option>
+                                        </select>
                                         <button className='btn btn-primary mt-2' onClick={() => {
                                             deleteCart(value)
                                         }
@@ -134,7 +236,7 @@ export default function CartItems(props) {
                     <div className='bg-light '>
 
                         <div className='offset-3 mt-5  '>
-                            <PriceCalculation  data={state.accounts} />
+                            <PriceCalculation data={state.accounts}  />
                             <button onClick={billingfn} className="btn mb-5 offset-md-2 offset-sm-1 btn-primary">PlaceOrder</button>
 
                         </div>
@@ -144,13 +246,13 @@ export default function CartItems(props) {
                     </div>
 
                 </div>
-             
 
-              
+
+
 
             </div>
 
-
+            <CustomizedSnackbarsCart open={open} />
         </div>
     )
 

@@ -4,6 +4,7 @@ import UserContext from '../context/context'
 
 export default function Wishlist(props) {
 
+    let id = localStorage.getItem("id")
 
     let stateShow = {
         accounts: []
@@ -13,23 +14,16 @@ export default function Wishlist(props) {
     const [stateWishlist, setStateWishlist] = useState(stateShow)
 
     let getAllAccount = async () => {
-        const url = `https://react-shopping-cart-fa82c.firebaseio.com/addwishlist/${context.idUser}.json`
+        const url = `https://react-shopping-cart-fa82c.firebaseio.com/account/${id}/product.json`
         try {
             let response = await Axios.get(url)
             console.log("response Data", response.data);
-            let arr = []
-            for (let key in response.data) {
-                const account = response.data[key]
-
-                arr.push({
-
-                    ...account,
-                    id: key
-                })
-            }
-            console.log("arr ", arr);
+            let filter = response.data.filter((value)=>{
+                return value.wis===true
+            })
+            
             setStateWishlist({
-                accounts: arr
+                accounts: filter
             })
 
         } catch (error) {
@@ -39,7 +33,6 @@ export default function Wishlist(props) {
         }
 
     }
-
 
 
 
@@ -56,7 +49,7 @@ export default function Wishlist(props) {
     }, [])
 
     
-
+    
 
 
 
@@ -78,7 +71,7 @@ export default function Wishlist(props) {
                                     <img src={value.image} className="mt-3 ml-2" style={imgStyle} alt="img"></img>
                                     <div className='text-primary'>{value.brand}</div>
                                     <div>price:{value.price}</div>
-
+                                   
 
                                 </div>
 

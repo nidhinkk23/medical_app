@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'//imrr
 import { UserProvider } from './components/context/context'
 import NavBar from './components/navbar/NavBar'
-
+import "./App.css"
 export default class App extends Component {
   state = {
     
@@ -11,6 +11,7 @@ export default class App extends Component {
     idUser:"",
     price:"",
     details:"",
+    bData:"",
     getDetails:(data)=>{
       this.setState({
         details:data
@@ -35,6 +36,11 @@ export default class App extends Component {
       this.setState({
         idUser:id
       })
+    },
+    buyeData:(data)=>{
+      this.setState({
+        bData:data
+      })
     }
    
   }
@@ -44,7 +50,7 @@ export default class App extends Component {
   authtcn = (click) => {
     console.log(click);
 
-
+    localStorage.setItem("login",click)
     this.setState({
       login: click
 
@@ -57,7 +63,7 @@ export default class App extends Component {
       <Router>
 
         <UserProvider value={this.state}>
-          <NavBar />
+          <NavBar  />
 
         </UserProvider>
 

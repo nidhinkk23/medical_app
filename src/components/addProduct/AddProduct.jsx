@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Axios from 'axios'
-
+import CustomizedSnackbars from './SnackBar'
 export default function AddProduct(props) {
 
     let addPdtState = {
@@ -34,6 +34,8 @@ export default function AddProduct(props) {
 
 
     //state
+  const [open, setOpen] = React.useState(false);
+
     const [state, setstate] = useState(addPdtState)
 
     const [valPrdct, setValPrdct] = useState(valPrdctData)
@@ -56,7 +58,7 @@ export default function AddProduct(props) {
     const { productName, brand, price, quantity, image } = state
     //onKeyUp Validation
     let keyUpVal = (event) => {
-        if(event.target.name === 'productName'){
+        if (event.target.name === 'productName') {
             if (!productName.trim().match(/^[a-z A-Z]+$/)) {
 
                 setValPrdct(
@@ -65,7 +67,7 @@ export default function AddProduct(props) {
                         valN: true,
                         errorN: "product name should not be  number "
                     })
-            }else if (productName.trim().length>20) {
+            } else if (productName.trim().length > 20) {
 
                 setValPrdct(
                     {
@@ -73,73 +75,73 @@ export default function AddProduct(props) {
                         valN: true,
                         errorN: "product name should less than 20 "
                     })
-            }else {
+            } else {
                 setValPrdct({
                     ...valPrdct,
                     valN: false
                 })
             }
         }
-       if(event.target.name==='brand'){
-        if (!brand.trim().match(/^[a-zA-Z]+$/)) {
-            setvalBrand({
-                valB: true,
-                errorB: "brand name should not be number  "
-            })
-        }
-        else  if (brand.trim().length > 20) {
-            setvalBrand({
-                valB: true,
-                errorB: "brand name should less than 20 "
-            })
-        }else {
-            setvalBrand({
-                ...valBrand,
-                valB: false
-            })
-        }
-       }
-       if(event.target.name === 'price'){
-        if (!price.trim().match(/^[0-9]+$/)) {
-            setValPrice({
-                valP: true,
-                errorP: "price should be number "
-            })
-        } else {
-            setValPrice({
-                ...valPrice,
-                valP: false
-            })
-        }
-       }
-       if(event.target.name === 'quantity'){
-        if(!quantity.trim().match(/^[0-9]+$/)){
-            setValQuantity({
-                valQ: true,
-                errorQ: "Quantity should be number"
-            })
-        }
-        else{
-            setValQuantity({
-                ...valQuantity,
-                valQ: false
-            })
-           }
-       }
-       if(event.target.name=== 'image'){
-            if(image.trim().length>30){
-                setValImage({
-                    
-                    valI:false,
-                    errorI:"not more than 30 character "
-                })
-            }else{
-                setValImage({
-                    ...valImage,
-                    valI:false
+        if (event.target.name === 'brand') {
+            if (!brand.trim().match(/^[a-zA-Z]+$/)) {
+                setvalBrand({
+                    valB: true,
+                    errorB: "brand name should not be number  "
                 })
             }
-       }
+            else if (brand.trim().length > 20) {
+                setvalBrand({
+                    valB: true,
+                    errorB: "brand name should less than 20 "
+                })
+            } else {
+                setvalBrand({
+                    ...valBrand,
+                    valB: false
+                })
+            }
+        }
+        if (event.target.name === 'price') {
+            if (!price.trim().match(/^[0-9]+$/)) {
+                setValPrice({
+                    valP: true,
+                    errorP: "price should be number "
+                })
+            } else {
+                setValPrice({
+                    ...valPrice,
+                    valP: false
+                })
+            }
+        }
+        if (event.target.name === 'quantity') {
+            if (!quantity.trim().match(/^[0-9]+$/)) {
+                setValQuantity({
+                    valQ: true,
+                    errorQ: "Quantity should be number"
+                })
+            }
+            else {
+                setValQuantity({
+                    ...valQuantity,
+                    valQ: false
+                })
+            }
+        }
+        if (event.target.name === 'image') {
+            if (image.trim().length > 30) {
+                setValImage({
+
+                    valI: false,
+                    errorI: "not more than 30 character "
+                })
+            } else {
+                setValImage({
+                    ...valImage,
+                    valI: false
+                })
+            }
+        }
 
 
     }
@@ -150,7 +152,7 @@ export default function AddProduct(props) {
     //validation
     let validation = (event) => {
         event.preventDefault()
-
+        
         if (productName.trim().length < 2 || !productName.trim().match(/^[a-zA-Z]+$/) || brand.trim().length === 0 || price.trim().length === 0 || quantity.trim().length === 0 || image.trim().length < 3) {
             console.log("validation failed");
             if (!productName.trim().match(/^[a-z A-Z]+$/) || productName.trim().length < 2) {
@@ -164,7 +166,7 @@ export default function AddProduct(props) {
                             errorN: "product name should not be  number "
                         })
                 }
-                else if (productName.trim().length < 2 || productName.trim().length > 20 ) {
+                else if (productName.trim().length < 2 || productName.trim().length > 20) {
                     console.log();
 
                     setValPrdct({
@@ -180,7 +182,7 @@ export default function AddProduct(props) {
                     })
                 }
             }
-            if (brand.trim().length === 0 || !brand.trim().match(/^[a-zA-Z]+$/) || brand.trim().length > 20 ) {
+            if (brand.trim().length === 0 || !brand.trim().match(/^[a-zA-Z]+$/) || brand.trim().length > 20) {
                 if (brand.trim().length === 0 || brand.trim().length > 20) {
                     setvalBrand({
                         valB: true,
@@ -219,13 +221,13 @@ export default function AddProduct(props) {
                     valP: false
                 })
             }
-            if(quantity.trim().length === 0 ||quantity.trim().match(/^[a-zA-Z]+$/)||quantity.trim().length < 4){
+            if (quantity.trim().length === 0 || quantity.trim().match(/^[a-zA-Z]+$/) || quantity.trim().length < 4) {
                 if (quantity.trim().length === 0) {
                     setValQuantity({
                         valQ: true,
                         errorQ: "Quantity should not be empty"
                     })
-                }else if(quantity.trim().match(/^[a-zA-Z]+$/)){
+                } else if (quantity.trim().match(/^[a-zA-Z]+$/)) {
                     setValQuantity({
                         valQ: true,
                         errorQ: "Quantity should be number"
@@ -255,6 +257,7 @@ export default function AddProduct(props) {
 
 
         } else {
+            setOpen(true)
             saveData()
         }
     }
@@ -269,6 +272,7 @@ export default function AddProduct(props) {
 
         const formData = state
         console.log("formData: ", formData);
+        // const url = "http://localhost:8080/shoppingcart/addproduct"
         const url = "https://react-shopping-cart-fa82c.firebaseio.com/addproduct.json"
 
         let axiosAddProduct = async () => {
@@ -278,7 +282,9 @@ export default function AddProduct(props) {
                 const status = response.status
                 console.log("status :", status);
                 if (status === 200) {
+                    
                     console.log("Successfully Added");
+                    
                     props.history.push("/showproduct")
 
                 } else {
@@ -360,6 +366,7 @@ export default function AddProduct(props) {
                 </div>
 
             </form>
+            <CustomizedSnackbars open = {open}/>
 
         </>
     )
